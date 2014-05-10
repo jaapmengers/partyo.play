@@ -1,9 +1,25 @@
-@(items: List[controllers.Party])
+@()(implicit request: RequestHeader)
 
 @main("Partyo") {
-    <ul>
-    @items.map { item =>
-        <li>@item.facebookId</li>
-    }
-    </ul>
+    <script>
+        var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+        var chatSocket = new WS("@routes.Application.takePicture.webSocketURL()")
+
+        var sendMessage = function() {
+            chatSocket.send(JSON.stringify(
+                {text: "blaat"}
+            ))
+        }
+
+        var receiveEvent = function(event) {
+            var data = JSON.parse(event.data)
+            $('#messages').append(data.message + '<br/>')
+        }
+
+        chatSocket.onmessage = receiveEvent
+    </script>
+
+    <div id="messages">
+
+    </div>
 }

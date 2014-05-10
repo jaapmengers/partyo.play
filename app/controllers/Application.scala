@@ -6,60 +6,88 @@ import reactivemongo.bson._
 import reactivemongo.api.collections.default.BSONCollection
 import reactivemongo.api._
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.iteratee._
+import play.api.libs.json.JsValue
 
-case class Party(_id: Option[BSONObjectID], facebookId: String)
+import models._
 
-object Party {
-  implicit object PartyBSONReader extends BSONDocumentReader[Party]{
-    def read(doc: BSONDocument): Party =
-      Party(
-        doc.getAs[BSONObjectID]("_id"),
-        doc.getAs[String]("facebookId").get
-      )
-  }
 
-  implicit object PartyBSONWriter extends BSONDocumentWriter[Party] {
-    def write(party: Party): BSONDocument =
-      BSONDocument(
-        "_id" -> party._id.getOrElse(BSONObjectID.generate),
-        "facebookId" -> party.facebookId
-      )
-  }
-}
+//case class Party(_id: Option[BSONObjectID], facebookId: String)
+//
+//object Party {
+//  implicit object PartyBSONReader extends BSONDocumentReader[Party]{
+//    def read(doc: BSONDocument): Party =
+//      Party(
+//        doc.getAs[BSONObjectID]("_id"),
+//        doc.getAs[String]("facebookId").get
+//      )
+//  }
+//
+//  implicit object PartyBSONWriter extends BSONDocumentWriter[Party] {
+//    def write(party: Party): BSONDocument =
+//      BSONDocument(
+//        "_id" -> party._id.getOrElse(BSONObjectID.generate),
+//        "facebookId" -> party.facebookId
+//      )
+//  }
+//}
 
 object Application extends Controller {
 
-  def connect: BSONCollection = {
+//  def connect: BSONCollection = {
+//
+//    // gets an instance of the driver
+//    // (creates an actor system)
+//    val driver = new MongoDriver
+//    val connection = driver.connection(List("localhost"))
+//
+//    // Gets a reference to the database "plugin"
+//    val db = connection("partyo")
+//
+//    // Gets a reference to the collection "acoll"
+//    // By default, you get a BSONCollection.
+//    val collection = db("partys")
+//    collection
+//  }
+//
+//  def index = Action.async { implicit request =>
+//
+//    import Party._
+//
+//    val collection = connect
+//
+//    val query = BSONDocument("$query" -> BSONDocument())
+//    val items = collection.find(query).cursor[Party]
+//
+//    items.collect[List]().map { partys =>
+//      Ok(views.html.index(partys))
+//    }.recover {
+//      case e =>
+//        BadRequest(e.getMessage)
+//    }
+//  }
 
-    // gets an instance of the driver
-    // (creates an actor system)
-    val driver = new MongoDriver
-    val connection = driver.connection(List("localhost"))
-
-    // Gets a reference to the database "plugin"
-    val db = connection("partyo")
-
-    // Gets a reference to the collection "acoll"
-    // By default, you get a BSONCollection.
-    val collection = db("partys")
-    collection
+  def index = Action { implicit request =>
+    Ok(views.html.index())
   }
 
-  def index = Action.async { implicit request =>
-
-    import Party._
-
-    val collection = connect
-
-    val query = BSONDocument("$query" -> BSONDocument())
-    val items = collection.find(query).cursor[Party]
-
-    items.collect[List]().map { partys =>
-      Ok(views.html.index(partys))
-    }.recover {
-      case e =>
-        BadRequest(e.getMessage)
-    }
+  def takePicture = WebSocket.async[JsValue] { request =>
+    Party.join
   }
 
+
+//  def socket = WebSocket.using[String] { request =>
+//
+//    //Concurernt.broadcast returns (Enumerator, Concurrent.Channel)
+//    val (out, channel) = Concurrent.broadcast[String]
+//
+//    //log the message to stdout and send response back to client
+//    val in = Iteratee.foreach[String] {
+//      msg => println(msg)
+//        //the channel will push to the Enumerator
+//        channel push ("RESPONSE: " + msg)
+//    }
+//
+//    (in, out)
+//  }
 }
