@@ -47,23 +47,34 @@ object Robot {
 object Party {
   implicit val timeout = Timeout(1 second)
 
-  lazy val default = {
+  var actors:Map[String, ActorRef] = Map()
 
-    val partyActor = Akka.system.actorOf(Props[Party])
-    Robot(partyActor)
-    partyActor
+  def getActor(id: String): ActorRef = {
+    val actor = actors.get(id)
+    if(actor.isDefined){
+      println("Get existing actor: " + id)
+      actor.get
+    }
+    else {
+      println("Add new actor: " + id)
+      val newActor = Akka.system.actorOf(Props[Party])
+      actors += (id -> newActor)
+      newActor
+    }
   }
 
-  def join: scala.concurrent.Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
-    (default ? Join).map {
+  def join(id: String): scala.concurrent.Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
+    val actor = getActor(id)
+
+    (actor ? Join).map {
 
       case Connected(enumerator) =>
 
         // Create an Iteratee to consume the feed
         val iteratee = Iteratee.foreach[JsValue] { event =>
-          default ! Talk((event \ "text").as[String])
+          actor ! Talk((event \ "text").as[String])
         }.map { _ =>
-          default ! Quit
+          actor ! Quit
         }
 
         (iteratee, enumerator)

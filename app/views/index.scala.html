@@ -5,11 +5,18 @@
         var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
         var chatSocket = new WS("@routes.Application.takePicture.webSocketURL()")
 
-        var sendMessage = function() {
+        var sendMessage = function(val) {
             chatSocket.send(JSON.stringify(
-                {text: "blaat"}
+                {text: val}
             ))
         }
+
+        $(document).ready(function(){
+            $('#submit').on('click', function(){
+              sendMessage($('#text').val());
+              $('#text').val("")
+            });
+        });
 
         var receiveEvent = function(event) {
             var data = JSON.parse(event.data)
@@ -19,6 +26,8 @@
         chatSocket.onmessage = receiveEvent
     </script>
 
+    <input type="text" id="text"/>
+    <input type="button" id="submit" value="Submit"/>
     <div id="messages">
 
     </div>
