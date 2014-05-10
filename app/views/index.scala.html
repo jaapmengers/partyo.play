@@ -1,7 +1,9 @@
-@(message: String)
+@(items: List[controllers.Party])
 
-@main("Welcome to Play") {
-
-    @play20.welcome(message)
-
+@main("Partyo") {
+    <ul>
+    @items.map { item =>
+        <li>@item.facebookId</li>
+    }
+    </ul>
 }
