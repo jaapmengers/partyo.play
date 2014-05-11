@@ -10,6 +10,16 @@ import models._
 
 object Application extends Controller {
 
+
+  def javascriptRoutes = Action { implicit request =>
+    import routes.javascript._
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+        routes.javascript.Application.takePicture
+      )
+    ).as("text/javascript")
+  }
+
   def index = Action { implicit request =>
     request.cookies.get("facebookId") match{
       case Some(_) => Ok(views.html.index())
