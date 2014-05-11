@@ -1,0 +1,10 @@
+@()(implicit request: RequestHeader)
+
+@javascripts = {
+    <script src="@routes.Assets.at("javascripts/camera.js")" type="text/javascript"></script>
+}
+
+@main("Partyo", javascripts) {
+    <video id="video" width="1024" height="768" autoplay></video>
+    <canvas id="canvas" width="1024" height="768"></canvas>
+}

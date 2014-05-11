@@ -5,8 +5,9 @@
 # Home page
 GET     /                           controllers.Application.index
 GET     /socket                     controllers.Application.takePicture
-GET     /select/:id                 controllers.Application.select(id: String)
+GET     /select/:id/:isAdmin        controllers.Application.select(id: String, isAdmin: Boolean)
 GET     /jsroutes                   controllers.Application.javascriptRoutes
+GET     /discard                    controllers.Application.discard
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
