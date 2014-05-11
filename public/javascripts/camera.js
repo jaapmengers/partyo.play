@@ -11,11 +11,10 @@ window.addEventListener("DOMContentLoaded", function() {
 		});
 
 		FB.getLoginStatus(function(response) {
-
-			if(response.status === 'not_authorized'){
+			if(response.status !== 'connected'){
 				FB.login(function(response){
-					console.log(response);
-				}, {scope: 'user_events,user_friends,user_photos,create_note,photo_upload,publish_stream,publish_actions,rsvp_event,status_update,create_event,publish_checkins,share_item,video_upload'});
+				  access_token = response.authResponse.accessToken;
+				}, {scope: 'user_events,photo_upload'});
 			} else {
 				access_token = response.authResponse.accessToken;
 			}
