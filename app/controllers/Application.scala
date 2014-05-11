@@ -2,14 +2,36 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import reactivemongo.bson._
+import reactivemongo.api.collections.default.BSONCollection
+import reactivemongo.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.iteratee._
 import play.api.libs.json.JsValue
 
 import models._
 
-object Application extends Controller {
+case class Party(_id: Option[BSONObjectID], facebookId: String)
 
+object PartyBSONFormats {
+  implicit object PartyBSONReader extends BSONDocumentReader[Party]{
+    def read(doc: BSONDocument): Party =
+      Party(
+        doc.getAs[BSONObjectID]("_id"),
+        doc.getAs[String]("facebookId").get
+      )
+  }
+
+  implicit object PartyBSONWriter extends BSONDocumentWriter[Party] {
+    def write(party: Party): BSONDocument =
+      BSONDocument(
+        "_id" -> party._id.getOrElse(BSONObjectID.generate),
+        "facebookId" -> party.facebookId
+      )
+  }
+}
+
+object Application extends Controller {
 
   def javascriptRoutes = Action { implicit request =>
     import routes.javascript._
@@ -49,6 +71,6 @@ object Application extends Controller {
 
   def takePicture = WebSocket.async[JsValue] { request =>
     val facebookId = request.cookies.get("facebookId").get.value
-    Party.join(facebookId)
+    PartyRooms.join(facebookId)
   }
 }

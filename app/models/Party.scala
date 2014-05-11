@@ -14,9 +14,9 @@ import akka.pattern.ask
 
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
-import models.Party._
+import models.PartyRooms._
 
-object Party {
+object PartyRooms {
   implicit val timeout = Timeout(1 second)
 
   var actors:Map[String, ActorRef] = Map()
@@ -29,7 +29,7 @@ object Party {
     }
     else {
       println("Add new actor: " + id)
-      val newActor = Akka.system.actorOf(Props[Party])
+      val newActor = Akka.system.actorOf(Props[PartyActor])
       actors += (id -> newActor)
       newActor
     }
@@ -67,7 +67,7 @@ object Party {
   }
 }
 
-class Party extends Actor {
+class PartyActor extends Actor {
   val (chatEnumerator, chatChannel) = Concurrent.broadcast[JsValue]
 
   def receive = {
