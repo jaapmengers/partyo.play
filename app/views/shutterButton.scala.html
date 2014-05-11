@@ -1,4 +1,4 @@
-@()(implicit request: RequestHeader)
+@(id: String, facebookId: String)(implicit request: RequestHeader)
 
 @javascript = {
     <script src="@routes.Assets.at("javascripts/shutterButton.js")" type="text/javascript"></script>
@@ -9,5 +9,7 @@
     <div id="messages">
 
     </div>
+
+    <a href="@routes.Application.select(id, true)">Camera</a>
 }
 

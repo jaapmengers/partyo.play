@@ -1,6 +1,7 @@
-@()(implicit request: RequestHeader)
+@(id: String, facebookId: String)(implicit request: RequestHeader)
 
 @javascripts = {
+    <script type="text/javascript">var FACEBOOK_ID = '@facebookId'</script>
     <script src="@routes.Assets.at("javascripts/camera.js")" type="text/javascript"></script>
 }
 

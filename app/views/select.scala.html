@@ -1,8 +1,18 @@
 @()
 
-@main("Partyo") {
-    <a href="@routes.Application.select("een", false)">Een</a>
-    <a href="@routes.Application.select("twee", false)">Twee</a>
-    <a href="@routes.Application.select("een", true)">Een (Admin)</a>
-    <a href="@routes.Application.select("twee", true)">Twee (Admin)</a>
+@javascript = {
+    <script src="@routes.Assets.at("javascripts/q.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/underscore.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/selectEvent.js")" type="text/javascript"></script>
+}
+
+@main("Partyo", javascript) {
+
+    <h3>Maak een evenement aan</h3>
+    @helper.form(routes.Application.createEvent) {
+        <input type="hidden" name="facebookId" id="facebookId"/>
+        <ul id="events">
+
+        </ul>
+    }
 }
