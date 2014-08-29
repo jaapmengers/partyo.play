@@ -1,4 +1,5 @@
 var access_token;
+var group = '323119494534618';
 
 // Put event listeners into place
 window.addEventListener("DOMContentLoaded", function() {
@@ -121,7 +122,7 @@ function PostImageToFacebook( authToken, filename, mimeType, imageData, message 
     formData += '--' + boundary + '--\r\n';
 
     var xhr = new XMLHttpRequest();
-    xhr.open( 'POST', 'https://graph.facebook.com/323119494534618/photos?access_token=' + authToken, true );
+    xhr.open( 'POST', 'https://graph.facebook.com/' + group + '/photos?access_token=' + authToken, true );
     xhr.setRequestHeader( "Content-Type", "multipart/form-data; boundary=" + boundary );
 		xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {

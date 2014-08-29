@@ -20,35 +20,15 @@ object Application extends Controller {
     ).as("text/javascript")
   }
 
-  def discard = Action { implicit request =>
-    Redirect(routes.Application.index).discardingCookies(DiscardingCookie("isAdmin"), DiscardingCookie("facebookId"))
-  }
-
   def index = Action { implicit request =>
-
-    val cookies = (
-      request.cookies.get("facebookId"),
-      request.cookies.get("isAdmin")
-    )
-
-    cookies match{
-      case (Some(_), Some(_)) => Ok(views.html.camera())
-      case (Some(_), None) => Ok(views.html.shutterButton())
-      case _ => Ok(views.html.select())
-    }
+    Ok(views.html.shutterButton())
   }
 
-  def select(id: String, isAdmin: Boolean) = Action { implicit request =>
-    val cookies = (isAdmin match {
-      case true => Seq(Cookie("isAdmin", "true"))
-      case false => Seq()
-    }) ++ Seq(Cookie("facebookId", id))
-
-    Redirect(routes.Application.index).withCookies(cookies: _*)
+  def camera = Action { implicit request =>
+    Ok(views.html.camera())
   }
 
   def takePicture = WebSocket.async[JsValue] { request =>
-    val facebookId = request.cookies.get("facebookId").get.value
-    Party.join(facebookId)
+    Party.join("default")
   }
 }

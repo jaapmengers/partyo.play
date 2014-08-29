@@ -3,11 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET     /socket                     controllers.Application.takePicture
-GET     /select/:id/:isAdmin        controllers.Application.select(id: String, isAdmin: Boolean)
-GET     /jsroutes                   controllers.Application.javascriptRoutes
-GET     /discard                    controllers.Application.discard
+GET        /                    controllers.Application.index
+GET        /camera              controllers.Application.camera
+GET        /socket              controllers.Application.takePicture
+GET        /jsroutes            controllers.Application.javascriptRoutes
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET        /assets/*file        controllers.Assets.at(path="/public", file)
